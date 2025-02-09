@@ -1,2 +1,2 @@
 # curso-kubernetes-for-developers
-Kubernetes-for-developers
+Este proyecto contiene las respuestas al examen del curso de Kubernetes for Developers
