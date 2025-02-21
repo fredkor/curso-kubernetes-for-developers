@@ -1,0 +1,99 @@
+<div class="card">
+    <p-toast />
+    <p-toolbar styleClass="mb-6">
+        <ng-template #start>
+            <p-button label="Agregar" icon="pi pi-plus" class="mr-2" (onClick)="openNew()" />
+            &nbsp;
+        </ng-template>
+    </p-toolbar>
+
+    <p-table #dt [value]="areas" [rows]="10" [columns]="cols" [paginator]="true"
+             [totalRecords]="totalRecords" [loading]="loading" [lazyLoadOnInit]="false"
+             [lazy]="true" (onLazyLoad)="loadLazy($event)"
+        [tableStyle]="{ 'min-width': '75rem' }" [(selection)]="selectedAreas" [rowHover]="true" dataKey="id"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+        <ng-template #caption>
+            <div class="flex items-center justify-between">
+                <h5 class="m-0">Administrar áreas</h5>
+                <p-iconfield>
+                    <p-inputicon styleClass="pi pi-search" />
+                    <input pInputText type="text" (input)="applyFilter($event)" placeholder="Search..." />
+                </p-iconfield>
+            </div>
+        </ng-template>
+        <ng-template #header>
+            <tr>
+                <th style="min-width: 16rem">Num.</th>
+                <th pSortableColumn="name" style="min-width:16rem">
+                    Descripci&oacute;n
+                    <p-sortIcon field="name" />
+                </th>
+                <th pSortableColumn="category" style="min-width:10rem">
+                    Descripci&oacute;n completa
+                    <p-sortIcon field="category" />
+                </th>
+                <th pSortableColumn="inventoryStatus" style="min-width: 12rem">
+                    Status
+                    <p-sortIcon field="inventoryStatus" />
+                </th>
+                <th style="min-width: 12rem"></th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-area let-index="rowIndex">
+            <tr>
+                <td style="width: 3rem">
+                    {{index + 1}}
+                </td>
+                <td style="min-width: 12rem">{{ area.descripcion }}</td>
+                <td style="min-width: 16rem">{{ area.descripcion_completa }}</td>
+                <td>
+                  @if (area.activo) {
+                    ACTIVO
+                  } @else {
+                    INACTIVO
+                  }
+                </td>
+                <td>
+                    <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true"
+                        (click)="editArea(area)" />
+                    <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
+                        (click)="deleteArea(area)" />
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template #summary>
+            <div class="flex items-center justify-between">En total hay {{ totalRecords ? totalRecords : 0 }}
+                áreas.</div>
+        </ng-template>
+    </p-table>
+
+    <p-dialog [(visible)]="areaDialog" [style]="{ width: '450px' }" header="Detalle" [modal]="true">
+        <ng-template #content>
+            <div class="flex flex-col gap-6">
+                <div>
+                    <label for="name" class="block font-bold mb-3">Descripción</label>
+                    <input type="text" pInputText id="name" [(ngModel)]="area.descripcion" required autofocus fluid />
+                    <small class="text-red-500" *ngIf="submitted && !area.descripcion">La descripción es requerida.</small>
+                </div>
+                <div>
+                    <label for="description" class="block font-bold mb-3">Descripción completa</label>
+                    <textarea id="description" pTextarea [(ngModel)]="area.descripcion_completa" required rows="3" cols="20"
+                        fluid></textarea>
+                  <small class="text-red-500" *ngIf="submitted && !area.descripcion">La descripción completa es requerida.</small>
+                </div>
+
+                <div class="grid grid-cols-12 gap-4">
+					<label for="activo">Activo</label>
+					<p-inputSwitch [(ngModel)]="area.activo"></p-inputSwitch>
+                </div>
+            </div>
+        </ng-template>
+
+        <ng-template #footer>
+            <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()" />
+            <p-button label="Save" icon="pi pi-check" (click)="saveArea()" />
+        </ng-template>
+    </p-dialog>
+
+    <p-confirmDialog [style]="{ width: '450px' }" />
+</div>

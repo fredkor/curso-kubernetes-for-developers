@@ -1,0 +1,8 @@
+# Obtiene los pods actuales con más información como el nodo.
+kubectl get pods -o wide			
+
+# Crear un deployment de manera imperativa con la imagen de nginx:1.27 y dos replicas.
+kubectl create deployment nginx-deployment --image=nginx:1.27 --replicas=2			
+
+# Escala el deployment nginx-deployment a 4 replicas.
+kubectl scale deployment nginx-deployment --replicas=4

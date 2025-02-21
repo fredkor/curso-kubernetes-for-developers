@@ -1,0 +1,4 @@
+Configurar y desplegar en AWS los servicios desplegados localmente. Para ello debe
+crear usuarios, roles requeridos, crear y configurar redes, crear el clúster, asignar
+nodos, instalar y configurar AWS CLI; conectarse remotamente y realizar el
+despliegue. Incluye el despliegue en consola web de AWS.

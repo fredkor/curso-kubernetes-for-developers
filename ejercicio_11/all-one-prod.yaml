@@ -1,0 +1,318 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-pv-prod
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  hostPath:
+    path: "/mnt/data_db_prod"
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+  namespace: prod
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: manual
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-db-secret
+  namespace: prod
+type: Opaque
+stringData:
+  POSTGRES_PASSWORD: "123456"
+  POSTGRES_USER: "dashboard"
+  POSTGRES_DB: "db_dashboard"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment
+  namespace: prod
+  labels:
+    app: postgres-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-db
+  template:
+    metadata:
+      labels:
+        app: postgres-db
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:17
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-db-secret
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-db-secret
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: postgres-db-secret
+              key: POSTGRES_DB
+        volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data              
+      volumes:
+      - name: postgres-data
+        persistentVolumeClaim:
+          claimName: postgres-pvc
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-db-service
+  labels:
+    app: postgres-db
+  namespace: prod
+spec:
+  selector:
+    app: postgres-db
+  ports:
+  - protocol: TCP
+    port: 5432
+    targetPort: 5432
+  type: ClusterIP
+
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: areas-backend-db-migrations-job
+  namespace: prod
+spec:
+  template:
+    spec:
+      containers:
+        - name: migrate
+          image: fredkor/api-areas-backend:1.0.0
+          command: ["/bin/sh", "-c", "flask db init && flask db migrate -m 'Initial migration' && flask db upgrade"]
+          env:
+          - name: FLASK_ENV
+            value: development
+          - name: CONTEXT_PATH
+            value: apidashboard
+          - name: USER_DB
+            valueFrom:
+              secretKeyRef:
+                name: postgres-db-secret
+                key: POSTGRES_USER
+          - name: USER_PWS
+            valueFrom:
+              secretKeyRef:
+                name: postgres-db-secret
+                key: POSTGRES_PASSWORD
+          - name: DB_HOST
+            value: postgres-db-service
+          - name: DB_PORT
+            value: '5432'
+          - name: DB_NAME
+            valueFrom:
+              secretKeyRef:
+                name: postgres-db-secret
+                key: POSTGRES_DB
+          - name: LOG_LEVEL
+            value: debug
+          - name: VERSION
+            value: 1.0.0
+      restartPolicy: Never
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: areas-backend-deployment
+  namespace: prod
+  labels:
+    app: areas-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: areas-backend
+  template:
+    metadata:
+      labels:
+        app: areas-backend
+      namespace: prod
+    spec:
+      containers:
+      - name: areas-backend
+        image: fredkor/api-areas-backend:1.0.0
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 8080
+            name: 8080tcp
+            protocol: TCP
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "400Mi"
+          limits:
+            cpu: "600m"
+            memory: "500Mi"
+        env:
+        - name: FLASK_ENV
+          value: development
+        - name: CONTEXT_PATH
+          value: apidashboard
+        - name: USER_DB
+          valueFrom:
+            secretKeyRef:
+              name: postgres-db-secret
+              key: POSTGRES_USER
+        - name: USER_PWS
+          valueFrom:
+            secretKeyRef:
+              name: postgres-db-secret
+              key: POSTGRES_PASSWORD
+        - name: DB_HOST
+          value: postgres-db-service
+        - name: DB_PORT
+          value: '5432'
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: postgres-db-secret
+              key: POSTGRES_DB
+        - name: LOG_LEVEL
+          value: debug
+        - name: VERSION
+          value: 1.0.0
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: areas-backend-service
+  namespace: prod
+spec:
+  selector:
+    app: areas-backend
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: areas-frontend-configmap
+  namespace: prod
+data:
+  config.json: |
+    {
+      "API_URL": "http://prod.areas.local/apidashboard",
+      "VERSION": "1.0.0"
+    }
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: areas-frontend-deployment
+  namespace: prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: areas-frontend
+  template:
+    metadata:
+      labels:
+        app: areas-frontend
+    spec:
+      containers:
+        - name: areas-frontend
+          image: fredkor/areas-frontend:1.0.0
+          volumeMounts:
+            - name: config-volume
+              mountPath: /usr/share/nginx/html/assets/config.json
+              subPath: config.json
+      volumes:
+        - name: config-volume
+          configMap:
+            name: areas-frontend-configmap
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: areas-frontend-service
+  namespace: prod
+spec:
+  selector:
+    app: areas-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: areas-ingress
+  namespace: prod
+spec:
+  rules:
+  - host: prod.areas.local
+    http:
+      paths:
+      - path: /apidashboard
+        pathType: Prefix
+        backend:
+          service:
+            name: areas-backend-service
+            port:
+              number: 8080
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: areas-frontend-service
+            port:
+              number: 80
+

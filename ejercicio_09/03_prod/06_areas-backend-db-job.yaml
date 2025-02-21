@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: areas-backend-db-migrations-job
+  namespace: prod
+spec:
+  template:
+    spec:
+      containers:
+        - name: migrate
+          image: fredkor/api-areas-backend:1.0.0
+          command: ["/bin/sh", "-c", "flask db init && flask db migrate -m 'Initial migration' && flask db upgrade"]
+          env:
+          - name: FLASK_ENV
+            value: development
+          - name: CONTEXT_PATH
+            value: apidashboard
+          - name: USER_DB
+            valueFrom:
+              secretKeyRef:
+                name: postgres-db-secret
+                key: POSTGRES_USER
+          - name: USER_PWS
+            valueFrom:
+              secretKeyRef:
+                name: postgres-db-secret
+                key: POSTGRES_PASSWORD
+          - name: DB_HOST
+            value: postgres-db-service
+          - name: DB_PORT
+            value: '5432'
+          - name: DB_NAME
+            valueFrom:
+              secretKeyRef:
+                name: postgres-db-secret
+                key: POSTGRES_DB
+          - name: LOG_LEVEL
+            value: debug
+          - name: VERSION
+            value: 1.0.0
+      restartPolicy: Never

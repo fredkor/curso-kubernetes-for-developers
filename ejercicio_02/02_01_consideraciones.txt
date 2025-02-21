@@ -1,0 +1,1 @@
+Crear y gestionar pods1. Incluye la ejecución de comandos en pods como es el caso de scripts de bases de datos, configuraciones u otros.

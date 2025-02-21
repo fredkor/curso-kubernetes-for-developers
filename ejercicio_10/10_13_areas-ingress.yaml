@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: areas-ingress
+  namespace: dev
+spec:
+  rules:
+  - host: areas.local
+    http:
+      paths:
+      - path: /apidashboard
+        pathType: Prefix
+        backend:
+          service:
+            name: areas-backend-service
+            port:
+              number: 8080
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: areas-frontend-service
+            port:
+              number: 80

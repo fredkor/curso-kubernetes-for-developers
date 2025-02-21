@@ -1,0 +1,2 @@
+Crear y configurar archivos de despliegue unificados(all-one) para cada ambiente
+(dev, qa y prod) que permitan agilizar el despliegue.

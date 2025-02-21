@@ -1,0 +1,14 @@
+fredkor@dragon:~$ kubectl create ns dev
+namespace/dev created
+
+fredkor@dragon:~$ kubectl create ns qa
+namespace/qa created
+
+fredkor@dragon:~$ kubectl create ns prod
+namespace/prod created
+
+fredkor@dragon:~$ kubectl config set-context --current --namespace=dev
+Context "minikube" modified.
+
+fredkor@dragon:~$ kubectl get all
+No resources found in dev namespace.

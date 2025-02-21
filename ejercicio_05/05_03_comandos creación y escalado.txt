@@ -1,0 +1,44 @@
+fredkor@dragon:~/development/curso-kubernetes-for-developers/ejercicio_05$ ls -l
+total 8
+-rw-rw-r-- 1 fredkor fredkor 101 Feb  8 23:12 05_01_consideraciones.txt
+-rw-rw-r-- 1 fredkor fredkor 602 Feb 10 11:56 05_02_nginx-replica-set.yaml
+fredkor@dragon:~/development/curso-kubernetes-for-developers/ejercicio_05$ kubectl apply -f 05_02_nginx-replica-set.yaml
+replicaset.apps/nginx-replicaset created
+fredkor@dragon:~/development/curso-kubernetes-for-developers/ejercicio_05$ kubectl get pods
+NAME                     READY   STATUS    RESTARTS       AGE
+nginx-replicaset-f9hrt   1/1     Running   0              4s
+nginx-replicaset-jlqx2   1/1     Running   0              4s
+nginx-replicaset-rqrx9   1/1     Running   0              4s
+postgresql-pod-2         1/1     Running   1 (158m ago)   35h
+fredkor@dragon:~/development/curso-kubernetes-for-developers/ejercicio_05$ kubectl get all
+NAME                         READY   STATUS    RESTARTS       AGE
+pod/nginx-replicaset-f9hrt   1/1     Running   0              18s
+pod/nginx-replicaset-jlqx2   1/1     Running   0              18s
+pod/nginx-replicaset-rqrx9   1/1     Running   0              18s
+pod/postgresql-pod-2         1/1     Running   1 (158m ago)   35h
+
+NAME                               DESIRED   CURRENT   READY   AGE
+replicaset.apps/nginx-replicaset   3         3         3       18s
+fredkor@dragon:~/development/curso-kubernetes-for-developers/ejercicio_05$ kubectl scale replicaset nginx-replicaset --replicas=5
+replicaset.apps/nginx-replicaset scaled
+fredkor@dragon:~/development/curso-kubernetes-for-developers/ejercicio_05$ kubectl get pods
+NAME                     READY   STATUS    RESTARTS       AGE
+nginx-replicaset-f9hrt   1/1     Running   0              38s
+nginx-replicaset-jlqx2   1/1     Running   0              38s
+nginx-replicaset-rh4mn   1/1     Running   0              3s
+nginx-replicaset-rqrx9   1/1     Running   0              38s
+nginx-replicaset-tjrdz   1/1     Running   0              3s
+postgresql-pod-2         1/1     Running   1 (158m ago)   35h
+fredkor@dragon:~/development/curso-kubernetes-for-developers/ejercicio_05$ kubectl get all
+NAME                         READY   STATUS    RESTARTS       AGE
+pod/nginx-replicaset-f9hrt   1/1     Running   0              41s
+pod/nginx-replicaset-jlqx2   1/1     Running   0              41s
+pod/nginx-replicaset-rh4mn   1/1     Running   0              6s
+pod/nginx-replicaset-rqrx9   1/1     Running   0              41s
+pod/nginx-replicaset-tjrdz   1/1     Running   0              6s
+pod/postgresql-pod-2         1/1     Running   1 (158m ago)   35h
+
+NAME                               DESIRED   CURRENT   READY   AGE
+replicaset.apps/nginx-replicaset   5         5         5       41s
+fredkor@dragon:~/development/curso-kubernetes-for-developers/ejercicio_05$ 
+

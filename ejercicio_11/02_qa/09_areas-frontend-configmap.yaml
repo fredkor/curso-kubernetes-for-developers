@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: areas-frontend-configmap
+  namespace: qa
+data:
+  config.json: |
+    {
+      "API_URL": "http://qa.areas.local/apidashboard",
+      "VERSION": "1.0.0"
+    }

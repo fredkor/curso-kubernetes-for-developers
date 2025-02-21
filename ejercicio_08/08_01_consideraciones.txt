@@ -1,0 +1,6 @@
+Configurar y desplegar servicios localmente utilizando Minikube. Debe incluir un
+servicio de bases de datos utilizando volúmenes (Persistent Volumes (PV) y/o
+Persistent Volume Claims (PVC)); este servicio puede ser remplazado por un servicio
+de nube; en el caso de AWS utilizar RDS (MySQL, MariaDB o PostgreSQL); también
+debe desplegar dos más servicios (API REST y APP Clientes) y demostrar su
+funcionamiento integrado.

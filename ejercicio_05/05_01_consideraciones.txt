@@ -1,0 +1,5 @@
+Crear y gestionar Replicaset1
+
+. Incluye su escalado (+/-) y la creación de servicios
+
+relacionados.

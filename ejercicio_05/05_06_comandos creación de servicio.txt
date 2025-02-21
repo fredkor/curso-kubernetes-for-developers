@@ -1,0 +1,43 @@
+fredkor@dragon:~/development/curso-kubernetes-for-developers/ejercicio_05$ ls -l
+total 220
+-rw-rw-r-- 1 fredkor fredkor    101 Feb  8 23:12  05_01_consideraciones.txt
+-rw-rw-r-- 1 fredkor fredkor    602 Feb 10 11:56  05_02_nginx-replica-set.yaml
+-rw-rw-r-- 1 fredkor fredkor   2810 Feb 10 12:01 '05_03_comandos creación y escalado.txt'
+-rw-rw-r-- 1 fredkor fredkor 207698 Feb 10 11:59 '05_04_evidencia creación y escalado.png'
+-rw-rw-r-- 1 fredkor fredkor    285 Feb 10 12:07  05_05_nginx-service.yaml
+
+fredkor@dragon:~/development/curso-kubernetes-for-developers/ejercicio_05$ kubectl apply -f 05_05_nginx-service.yaml
+service/nginx-service created
+fredkor@dragon:~/development/curso-kubernetes-for-developers/ejercicio_05$ kubectl get svc -o wide
+NAME            TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE   SELECTOR
+nginx-service   LoadBalancer   10.97.205.71   <pending>     80:32355/TCP   4s    app=nginx-app
+
+fredkor@dragon:~/development/curso-kubernetes-for-developers/ejercicio_05$ minikube service nginx-service --url -n dev
+http://192.168.49.2:32355
+
+fredkor@dragon:~/development/curso-kubernetes-for-developers/ejercicio_05$ curl http://192.168.49.2:32355
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+
+fredkor@dragon:~/development/curso-kubernetes-for-developers/ejercicio_05$

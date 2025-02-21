@@ -1,0 +1,134 @@
+---------------------------------------------------------------------------------------------
+------ Ver la versión del cliente y del servidor:
+----------------------------------------------------------------------------------------------
+
+kubectl version                                                     # Version del cliente
+
+kubectl get all --all-namespaces                                    # Listar todos los recursos en el clúster
+
+kubectl cluster-info                                                # Obtener información del clúster
+
+kubectl get nodes                                                   # Ver los nodos del clúster
+
+kubectl get nodes -o wide                                           # Ver los nodos del clúster y su IP
+
+
+----------------------------------------------------------------------------------------------
+------Namespaces
+----------------------------------------------------------------------------------------------
+
+kubectl get namespaces                                              # Listar todos los namespaces
+
+kubectl create namespace <nombre-namespace>                         # Crear un namespace
+
+kubectl delete namespace <nombre-namespace>                         # Eliminar un namespace
+
+
+----------------------------------------------------------------------------------------------
+------ Pods
+----------------------------------------------------------------------------------------------
+
+kubectl get pods                                                    # Listar todos los pods
+
+kubectl get pods -o wide                                            # Listar todos los pods y mas datos extra
+
+kubectl describe pod <nombre-pod>                                   # Ver detalles de un pod específico
+
+kubectl logs <nombre-pod>                                           # Ver los logs de un pod
+
+kubectl exec -it <nombre-pod> -- bash                               # Ingresar a un pod (si tiene un shell disponible)
+
+
+----------------------------------------------------------------------------------------------
+------ Deployments
+----------------------------------------------------------------------------------------------
+
+kubectl get deployments                                             # Listar todos los deployments
+
+kubectl apply -f <archivo-deployment.yaml>                          # Crear un deployment desde un archivo YAML
+
+kubectl scale deployment <nombre-deployment> --replicas=<número>    # Escalar un deployment
+
+kubectl delete deployment <nombre-deployment>                       # Eliminar un deployment
+
+
+----------------------------------------------------------------------------------------------
+------ Servicios (Services)
+----------------------------------------------------------------------------------------------
+
+kubectl get services                                                # Listar todos los servicios:
+
+kubectl get services -o wide                                        # Listar todos los servicios y IP's
+
+kubectl describe service <nombre-servicio>                          # Ver detalles de un servicio específico
+
+kubectl expose deployment <nombre-deployment> --type=<ClusterIP|NodePort|LoadBalancer> --port=<puerto> #Exponer un deployment como un servicio
+
+kubectl delete service <nombre-servicio>                            # Eliminar un servicio
+
+
+----------------------------------------------------------------------------------------------
+---- ConfigMaps y Secrets
+----------------------------------------------------------------------------------------------
+
+kubectl get configmaps                                              # Listar ConfigMaps
+
+kubectl create configmap <nombre> --from-file=<ruta-del-archivo>    # Crear un ConfigMap desde un archivo
+
+kubectl get secrets                                                 # Listar Secrets
+
+kubectl create secret generic <nombre> --from-literal=<clave>=<valor> # Crear un Secret
+
+
+----------------------------------------------------------------------------------------------
+Recursos
+----------------------------------------------------------------------------------------------
+
+kubectl apply -f <archivo.yaml>                                     # Crear recursos desde un archivo YAML
+
+kubectl delete -f <archivo.yaml>                                    # Eliminar recursos desde un archivo YAML
+
+kubectl get all -n <nombre-namespace>                               # Ver los recursos en un namespace específico
+
+
+----------------------------------------------------------------------------------------------
+Eventos y Estado
+----------------------------------------------------------------------------------------------
+
+kubectl get events                                                  # Ver eventos recientes
+
+kubectl describe nodes                                              # Ver la capacidad de los nodos
+
+
+----------------------------------------------------------------------------------------------
+Replicasets
+----------------------------------------------------------------------------------------------
+
+kubectl get replicasets                                             # Listar ReplicaSets
+
+kubectl describe replicaset <nombre-replicaset>                     # Ver detalles de un ReplicaSet
+
+
+----------------------------------------------------------------------------------------------
+Jobs y CronJobs
+----------------------------------------------------------------------------------------------
+
+kubectl get jobs                                                    # Listar todos los jobs
+
+kubectl apply -f <archivo-job.yaml>                                 # Crear un job desde un archivo YAML
+
+kubectl get cronjobs                                                # Listar todos los cronjobs
+
+kubectl apply -f <archivo-cronjob.yaml>                             # Crear un cronjob desde un archivo YAML
+
+
+----------------------------------------------------------------------------------------------
+Eliminar Recursos
+----------------------------------------------------------------------------------------------
+
+kubectl delete pod <nombre-pod>                                     # Eliminar un pod
+
+kubectl delete pods --all -n <namespace>                            # Eliminar todos los pods en un namespace
+
+kubectl delete <tipo-recurso> <nombre>                              # Eliminar un recurso específico (deployment, service, etc.):
+

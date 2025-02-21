@@ -1,0 +1,4 @@
+Crear y gestionar Secrets para configurar información sensible como es el caso de
+usuarios, claves, cadenas de conexión, puertos, etc. Para el caso de y ConfigMaps
+para configurar información general como es el caso de parámetros, certificados, etc.
+Incluye su uso en Deployements o Replicaset

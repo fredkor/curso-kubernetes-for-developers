@@ -1,0 +1,5 @@
+Crear y gestionar Servicios que permitan integrase con Deployment y/o Replicaset.
+Incluye exposición de puertos, tipos (NodePort & LoadBalancer). 
+
+En el caso de AWS
+debe exponer un IP(Link) público a través un Load Balancer

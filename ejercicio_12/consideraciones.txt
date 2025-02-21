@@ -1,0 +1,2 @@
+Otros comandos o recursos de Kubernetes como parte de su investigación y
+complemento a su proceso de entrenamiento.

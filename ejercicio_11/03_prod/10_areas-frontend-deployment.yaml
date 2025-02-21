@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: areas-frontend-deployment
+  namespace: prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: areas-frontend
+  template:
+    metadata:
+      labels:
+        app: areas-frontend
+    spec:
+      containers:
+        - name: areas-frontend
+          image: fredkor/areas-frontend:1.0.0
+          volumeMounts:
+            - name: config-volume
+              mountPath: /usr/share/nginx/html/assets/config.json
+              subPath: config.json
+      volumes:
+        - name: config-volume
+          configMap:
+            name: areas-frontend-configmap

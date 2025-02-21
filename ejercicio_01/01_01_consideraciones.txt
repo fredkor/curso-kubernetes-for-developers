@@ -1,0 +1,3 @@
+Crear un Kubernetes Cheat Sheet (Hoja de ayuda) personalizado de Kubernetes con
+los principales comandos utilizados en el desarrollo de sus casos, incluyendo aquellos
+que estime relevantes para utilizarlo en su trabajo u otros escenarios.

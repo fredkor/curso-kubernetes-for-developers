@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: areas-ingress
+  namespace: prod
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing # o internal
+spec:
+  ingressClassName: alb
+  rules:
+  - http:
+      paths:
+      - path: /apidashboard
+        pathType: Prefix
+        backend:
+          service:
+            name: areas-backend-service
+            port:
+              number: 8080
+      - path: /frontend
+        pathType: Prefix
+        backend:
+          service:
+            name: angular-frontend-service
+            port:
+              number: 80
